@@ -40,7 +40,8 @@ export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCance
     name: initialData?.name || '',
     company: initialData?.company || '',
     title: initialData?.title || '',
-    phone: initialData?.phone || '',
+    mobile: initialData?.mobile || '',
+    tel: initialData?.tel || '',
     email: initialData?.email || '',
     website: initialData?.website || '',
     address: initialData?.address || '',
@@ -91,7 +92,10 @@ export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCance
 
           <div className="h-px bg-slate-100 my-2"></div>
 
-          <InputField label="전화번호" name="phone" type="tel" placeholder="010-0000-0000" value={formData.phone} onChange={handleChange} />
+          <div className="grid grid-cols-2 gap-3">
+            <InputField label="휴대폰" name="mobile" type="tel" placeholder="010-0000-0000" value={formData.mobile} onChange={handleChange} />
+            <InputField label="일반전화" name="tel" type="tel" placeholder="02-000-0000" value={formData.tel} onChange={handleChange} />
+          </div>
           <InputField label="이메일" name="email" type="email" placeholder="example@company.com" value={formData.email} onChange={handleChange} />
           <InputField label="웹사이트" name="website" placeholder="www.company.com" value={formData.website} onChange={handleChange} />
           <InputField label="주소" name="address" placeholder="서울시 ..." value={formData.address} onChange={handleChange} />

@@ -28,7 +28,17 @@ export const dbGetCards = async (): Promise<BusinessCardData[]> => {
       const store = transaction.objectStore(STORE_NAME);
       const request = store.getAll();
 
-      request.onsuccess = () => resolve(request.result);
+      request.onsuccess = () => {
+        // Migrate old 'phone' field to 'mobile'
+        const cards = request.result.map((card: any) => {
+          if ('phone' in card && !('mobile' in card)) {
+            const { phone, ...rest } = card;
+            return { ...rest, mobile: phone, tel: '' };
+          }
+          return { ...card, mobile: card.mobile || '', tel: card.tel || '' };
+        });
+        resolve(cards);
+      };
       request.onerror = () => reject(request.error);
     });
   } catch (error) {

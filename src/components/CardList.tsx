@@ -179,9 +179,14 @@ export const CardList: React.FC<CardListProps> = ({ cards, onEdit, onDelete }) =
 
                   {/* Contact Details */}
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {card.phone && (
-                      <a href={`tel:${card.phone}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-500 hover:bg-slate-100 transition-colors">
-                        <Phone size={12} /> {card.phone}
+                    {card.mobile && (
+                      <a href={`tel:${card.mobile}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-500 hover:bg-slate-100 transition-colors">
+                        <Phone size={12} /> {card.mobile}
+                      </a>
+                    )}
+                    {card.tel && (
+                      <a href={`tel:${card.tel}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-500 hover:bg-slate-100 transition-colors">
+                        <Phone size={12} /> {card.tel}
                       </a>
                     )}
                     {card.email && (

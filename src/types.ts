@@ -10,7 +10,8 @@ export interface BusinessCardData {
   name: string;
   company: string;
   title: string;
-  phone: string;
+  mobile: string;
+  tel: string;
   email: string;
   website: string;
   address: string;
