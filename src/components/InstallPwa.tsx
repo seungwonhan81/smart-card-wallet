@@ -7,11 +7,9 @@ export const InstallPwa: React.FC = () => {
   const [showIosPrompt, setShowIosPrompt] = useState(false);
 
   useEffect(() => {
-    // 1. Check if already installed (standalone mode)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
     if (isStandalone) return;
 
-    // 2. Android: Listen for the beforeinstallprompt event
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -19,12 +17,10 @@ export const InstallPwa: React.FC = () => {
     };
     window.addEventListener('beforeinstallprompt', handler);
 
-    // 3. iOS: Detection logic (iPhone/iPad and not standalone)
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIos = /iphone|ipad|ipod/.test(userAgent);
-    
+
     if (isIos && !isStandalone) {
-      // Show iOS instruction after a short delay
       setTimeout(() => setShowIosPrompt(true), 2000);
     }
 
@@ -36,7 +32,7 @@ export const InstallPwa: React.FC = () => {
   const handleAndroidInstall = async () => {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    await deferredPrompt.userChoice;
     setDeferredPrompt(null);
     setShowAndroidPrompt(false);
   };
@@ -45,40 +41,38 @@ export const InstallPwa: React.FC = () => {
 
   return (
     <>
-      {/* Android Install Button */}
       {showAndroidPrompt && (
-        <div className="fixed top-4 right-4 z-[60]">
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[60]">
           <button
             onClick={handleAndroidInstall}
-            className="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-full shadow-xl font-bold hover:bg-brand-700 transition-all active:scale-95 animate-bounce border-2 border-white/20"
+            className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl font-semibold text-sm hover:bg-slate-800 transition-all active:scale-95"
           >
-            <Download size={18} strokeWidth={3} />
+            <Download size={16} strokeWidth={2.5} />
             앱 설치하기
           </button>
         </div>
       )}
 
-      {/* iOS Install Instructions Banner */}
       {showIosPrompt && (
-        <div className="fixed bottom-0 left-0 right-0 z-[60] p-4 bg-white/95 backdrop-blur shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] border-t border-gray-200 animate-slide-up">
-          <div className="max-w-md mx-auto relative">
-            <button 
-                onClick={() => setShowIosPrompt(false)} 
-                className="absolute -top-2 -right-2 p-2 text-gray-400 hover:text-gray-600"
+        <div className="fixed bottom-0 left-0 right-0 z-[60] p-4">
+          <div className="max-w-md mx-auto bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-100 p-5 relative">
+            <button
+              onClick={() => setShowIosPrompt(false)}
+              className="absolute top-3 right-3 p-1.5 text-slate-300 hover:text-slate-500 transition-colors"
             >
-                <X size={20} />
+              <X size={18} />
             </button>
             <div className="flex gap-4 items-start">
-                <div className="bg-brand-100 p-3 rounded-xl text-brand-600">
-                    <Download size={24} />
-                </div>
-                <div>
-                    <h3 className="font-bold text-gray-900 mb-1">앱으로 설치하여 사용하세요</h3>
-                    <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-                        사파리 하단의 <span className="inline-flex items-center align-middle mx-1"><Share size={14} /> 공유</span> 버튼을 누르고<br/>
-                        <span className="font-semibold text-gray-800">'홈 화면에 추가'</span>를 선택하세요.
-                    </p>
-                </div>
+              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Download size={18} className="text-slate-500" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-slate-900 mb-1">앱으로 설치하세요</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  사파리 하단 <Share size={12} className="inline align-middle mx-0.5" /> 공유 버튼 →
+                  <span className="font-semibold text-slate-600"> 홈 화면에 추가</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>

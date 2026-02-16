@@ -1,21 +1,19 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { BusinessCardData, CardGroup } from '../types';
 
 interface StatsChartProps {
   cards: BusinessCardData[];
 }
 
-// Map Tailwind classes to Hex codes for Recharts
 const COLOR_MAP: Record<CardGroup, string> = {
-  [CardGroup.WORK]: '#3b82f6',   // blue-500
-  [CardGroup.FRIEND]: '#22c55e', // green-500
-  [CardGroup.FAMILY]: '#ec4899', // pink-500
-  [CardGroup.OTHER]: '#6b7280',   // gray-500
+  [CardGroup.WORK]: '#3b82f6',
+  [CardGroup.FRIEND]: '#10b981',
+  [CardGroup.FAMILY]: '#fb7185',
+  [CardGroup.OTHER]: '#94a3b8',
 };
 
 export const StatsChart: React.FC<StatsChartProps> = ({ cards }) => {
-  
   const data = Object.values(CardGroup).map(group => ({
     name: group,
     value: cards.filter(c => c.group === group).length
@@ -24,55 +22,86 @@ export const StatsChart: React.FC<StatsChartProps> = ({ cards }) => {
   const totalCards = cards.length;
 
   return (
-    <div className="p-4 pb-24 max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold text-slate-800 mb-6">명함 통계</h1>
+    <div className="px-5 pt-14 pb-28 max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <p className="text-sm text-slate-400 font-medium mb-1">Overview</p>
+        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">통계</h1>
+      </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-            <h2 className="text-slate-500 text-sm font-medium mb-1">총 저장된 명함</h2>
-            <p className="text-4xl font-bold text-slate-900">{totalCards}<span className="text-lg font-normal text-slate-400 ml-1">개</span></p>
-        </div>
+      {/* Total Card */}
+      <div className="bg-slate-900 rounded-2xl p-6 mb-6">
+        <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">총 저장된 명함</p>
+        <p className="text-5xl font-bold text-white tracking-tight">
+          {totalCards}
+          <span className="text-lg font-normal text-slate-500 ml-1">개</span>
+        </p>
+      </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-96">
-            <h3 className="text-lg font-bold text-slate-800 mb-4">그룹별 분포</h3>
-            
-            {totalCards === 0 ? (
-                <div className="h-full flex items-center justify-center text-slate-400">
-                    데이터가 없습니다.
+      {/* Chart */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-100 mb-4">
+        <h3 className="text-sm font-semibold text-slate-900 mb-6">그룹별 분포</h3>
+
+        {totalCards === 0 ? (
+          <div className="h-48 flex items-center justify-center text-slate-300 text-sm">
+            데이터가 없습니다
+          </div>
+        ) : (
+          <div className="h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={85}
+                  paddingAngle={4}
+                  dataKey="value"
+                  strokeWidth={0}
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLOR_MAP[entry.name as CardGroup]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: '12px',
+                    border: 'none',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                    fontSize: '13px',
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
+
+      {/* Group Breakdown */}
+      <div className="space-y-2">
+        {Object.values(CardGroup).map((group) => {
+          const count = cards.filter(c => c.group === group).length;
+          const percentage = totalCards > 0 ? Math.round((count / totalCards) * 100) : 0;
+          return (
+            <div key={group} className="bg-white rounded-2xl p-4 border border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR_MAP[group] }}></div>
+                <span className="text-sm font-medium text-slate-700">{group}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ width: `${percentage}%`, backgroundColor: COLOR_MAP[group] }}
+                  ></div>
                 </div>
-            ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                        <Pie
-                            data={data}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={100}
-                            paddingAngle={5}
-                            dataKey="value"
-                        >
-                            {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLOR_MAP[entry.name as CardGroup]} />
-                            ))}
-                        </Pie>
-                        <Tooltip />
-                        <Legend verticalAlign="bottom" height={36}/>
-                    </PieChart>
-                </ResponsiveContainer>
-            )}
-        </div>
-        
-        <div className="mt-6 grid grid-cols-2 gap-4">
-             {data.map((item) => (
-                 <div key={item.name} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                     <div className="flex items-center gap-2">
-                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR_MAP[item.name as CardGroup] }}></div>
-                         <span className="font-medium text-slate-700">{item.name}</span>
-                     </div>
-                     <span className="font-bold text-slate-900">{item.value}</span>
-                 </div>
-             ))}
-        </div>
+                <span className="text-sm font-bold text-slate-900 w-8 text-right">{count}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -99,7 +99,7 @@ const App: React.FC = () => {
     if (isLoading) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50">
-           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+           <div className="animate-spin rounded-full h-8 w-8 border-2 border-slate-200 border-t-slate-900"></div>
         </div>
       );
     }

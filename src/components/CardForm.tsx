@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { BusinessCardData, CardGroup } from '../types';
-import { ChevronLeft, Save } from 'lucide-react';
+import { ChevronLeft, Check } from 'lucide-react';
 
 interface CardFormProps {
   initialData?: Partial<BusinessCardData>;
   onSave: (data: Omit<BusinessCardData, 'id' | 'createdAt'>) => void;
   onCancel: () => void;
 }
+
+const groupConfig: Record<CardGroup, { color: string; activeColor: string }> = {
+  [CardGroup.WORK]: { color: 'border-blue-200 text-blue-600', activeColor: 'bg-blue-500 text-white border-blue-500' },
+  [CardGroup.FRIEND]: { color: 'border-emerald-200 text-emerald-600', activeColor: 'bg-emerald-500 text-white border-emerald-500' },
+  [CardGroup.FAMILY]: { color: 'border-rose-200 text-rose-500', activeColor: 'bg-rose-400 text-white border-rose-400' },
+  [CardGroup.OTHER]: { color: 'border-slate-200 text-slate-500', activeColor: 'bg-slate-400 text-white border-slate-400' },
+};
 
 export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -31,152 +38,99 @@ export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCance
     onSave(formData);
   };
 
+  const InputField = ({ label, name, type = 'text', placeholder, required = false }: {
+    label: string; name: string; type?: string; placeholder: string; required?: boolean;
+  }) => (
+    <div>
+      <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+        {label} {required && <span className="text-red-400">*</span>}
+      </label>
+      <input
+        type={type}
+        name={name}
+        required={required}
+        value={(formData as any)[name]}
+        onChange={handleChange}
+        className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-900 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300 focus:bg-white transition-all text-sm"
+        placeholder={placeholder}
+      />
+    </div>
+  );
+
   return (
-    <div className="bg-white min-h-screen flex flex-col pb-safe-area">
+    <div className="bg-white min-h-screen flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-slate-100 px-4 py-3 sticky top-0 z-20 flex justify-between items-center shadow-sm">
-        <button onClick={onCancel} className="p-2 -ml-2 text-slate-800 hover:bg-slate-50 rounded-full">
-            <ChevronLeft size={24} />
+      <div className="px-5 py-4 flex justify-between items-center border-b border-slate-100">
+        <button onClick={onCancel} className="p-1 text-slate-400 hover:text-slate-600 transition-colors">
+          <ChevronLeft size={24} />
         </button>
-        <h2 className="font-bold text-lg text-slate-900">명함 정보 입력</h2>
-        <button onClick={handleSubmit} className="text-brand-600 font-semibold text-sm px-4 py-2 hover:bg-brand-50 rounded-lg transition-colors">
-            저장
+        <h2 className="font-bold text-base text-slate-900">명함 정보</h2>
+        <button
+          onClick={handleSubmit}
+          className="p-2 text-slate-900 hover:bg-slate-100 rounded-xl transition-colors"
+        >
+          <Check size={20} strokeWidth={2.5} />
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 max-w-2xl mx-auto w-full">
+      <div className="flex-1 overflow-y-auto px-5 py-6 max-w-2xl mx-auto w-full">
         {formData.imageUrl && (
-            <div className="mb-8 rounded-xl overflow-hidden shadow-md border border-slate-100">
-                <img src={formData.imageUrl} alt="Scanned Card" className="w-full h-auto object-cover block" />
-            </div>
+          <div className="mb-8 rounded-2xl overflow-hidden bg-slate-100">
+            <img src={formData.imageUrl} alt="Scanned Card" className="w-full h-auto object-cover block" />
+          </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Essential Info */}
-            <div className="bg-white rounded-xl">
-                <label className="block text-sm font-bold text-slate-900 mb-2">이름 <span className="text-red-500">*</span></label>
-                <input
-                    type="text"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all text-lg font-medium"
-                    placeholder="홍길동"
-                />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <InputField label="이름" name="name" placeholder="홍길동" required />
 
-            <div className="grid grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-bold text-slate-900 mb-2">회사</label>
-                    <input
-                        type="text"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all"
-                        placeholder="회사명"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-bold text-slate-900 mb-2">직함</label>
-                    <input
-                        type="text"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all"
-                        placeholder="직책"
-                    />
-                </div>
-            </div>
+          <div className="grid grid-cols-2 gap-3">
+            <InputField label="회사" name="company" placeholder="회사명" />
+            <InputField label="직함" name="title" placeholder="직책" />
+          </div>
 
-            {/* Contact Info */}
-            <div className="space-y-5 pt-4 border-t border-slate-100">
-                <h3 className="text-sm font-bold text-brand-600 uppercase tracking-wider flex items-center gap-2">
-                    상세 정보
-                </h3>
-                
-                <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">전화번호</label>
-                    <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none transition-all"
-                        placeholder="010-0000-0000"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">이메일</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none transition-all"
-                        placeholder="example@company.com"
-                    />
-                </div>
-                 <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">웹사이트</label>
-                    <input
-                        type="text"
-                        name="website"
-                        value={formData.website}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none transition-all"
-                        placeholder="www.company.com"
-                    />
-                </div>
-                 <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">주소</label>
-                    <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-brand-500 focus:bg-white outline-none transition-all"
-                        placeholder="서울시 ..."
-                    />
-                </div>
-            </div>
+          <div className="h-px bg-slate-100 my-2"></div>
 
-            {/* Group Select */}
-            <div className="pt-4 border-t border-slate-100">
-                <label className="block text-sm font-bold text-slate-900 mb-3">그룹</label>
-                <div className="grid grid-cols-3 gap-3">
-                    {Object.values(CardGroup).map(group => (
-                        <button
-                            key={group}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, group }))}
-                            className={`py-3 px-2 text-sm font-medium rounded-xl border transition-all ${
-                                formData.group === group 
-                                ? 'bg-brand-600 text-white border-brand-600 shadow-lg shadow-brand-500/30' 
-                                : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
-                            }`}
-                        >
-                            {group}
-                        </button>
-                    ))}
-                </div>
+          <InputField label="전화번호" name="phone" type="tel" placeholder="010-0000-0000" />
+          <InputField label="이메일" name="email" type="email" placeholder="example@company.com" />
+          <InputField label="웹사이트" name="website" placeholder="www.company.com" />
+          <InputField label="주소" name="address" placeholder="서울시 ..." />
+
+          <div className="h-px bg-slate-100 my-2"></div>
+
+          {/* Group Select */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">그룹</label>
+            <div className="grid grid-cols-4 gap-2">
+              {Object.values(CardGroup).map(group => (
+                <button
+                  key={group}
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, group }))}
+                  className={`py-2.5 px-2 text-xs font-semibold rounded-xl border transition-all duration-200 ${
+                    formData.group === group
+                      ? groupConfig[group].activeColor
+                      : groupConfig[group].color + ' bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  {group}
+                </button>
+              ))}
             </div>
-            
-            <div className="h-10"></div> {/* Bottom spacer */}
+          </div>
+
+          <div className="h-24"></div>
         </form>
       </div>
 
-       <div className="sticky bottom-0 p-4 bg-white border-t border-slate-100 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-           <button 
-                onClick={handleSubmit}
-                className="w-full flex items-center justify-center gap-2 bg-brand-600 text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-brand-500/20 active:scale-[0.98] transition-all hover:bg-brand-700"
-            >
-               <Save size={22} />
-               저장하기
-           </button>
-       </div>
+      {/* Save Button */}
+      <div className="sticky bottom-0 p-5 bg-white/80 backdrop-blur-xl border-t border-slate-100">
+        <button
+          onClick={handleSubmit}
+          className="w-full py-4 rounded-2xl bg-slate-900 text-white font-bold text-sm active:scale-[0.98] transition-all hover:bg-slate-800"
+        >
+          저장하기
+        </button>
+      </div>
     </div>
   );
 };
