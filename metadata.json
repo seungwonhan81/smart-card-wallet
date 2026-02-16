@@ -1,0 +1,7 @@
+{
+  "name": "Smart Card Wallet",
+  "description": "AI-powered business card management application capable of scanning and organizing contacts using Gemini Vision.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
