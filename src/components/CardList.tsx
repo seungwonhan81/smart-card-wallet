@@ -1,7 +1,32 @@
 import React, { useState, useMemo } from 'react';
 import { BusinessCardData, CardGroup } from '../types';
-import { Search, Phone, Mail, Globe, MapPin, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { Search, Phone, Mail, Globe, MapPin, MoreVertical, Pencil, Trash2, UserPlus } from 'lucide-react';
 import { GROUP_COLORS } from '../constants';
+
+const saveAsContact = (card: BusinessCardData) => {
+  const lines = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    `FN:${card.name}`,
+    `N:${card.name};;;;`,
+  ];
+  if (card.company) lines.push(`ORG:${card.company}`);
+  if (card.title) lines.push(`TITLE:${card.title}`);
+  if (card.mobile) lines.push(`TEL;TYPE=CELL:${card.mobile}`);
+  if (card.tel) lines.push(`TEL;TYPE=WORK:${card.tel}`);
+  if (card.email) lines.push(`EMAIL:${card.email}`);
+  if (card.website) lines.push(`URL:${card.website}`);
+  if (card.address) lines.push(`ADR;TYPE=WORK:;;${card.address};;;;`);
+  lines.push('END:VCARD');
+
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/vcard;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${card.name}.vcf`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
 
 interface CardListProps {
   cards: BusinessCardData[];
@@ -156,6 +181,12 @@ export const CardList: React.FC<CardListProps> = ({ cards, onEdit, onDelete }) =
                         <>
                           <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
                           <div className="absolute right-0 top-8 z-20 bg-white rounded-xl shadow-lg border border-slate-100 py-1 min-w-[100px]">
+                            <button
+                              onClick={() => { saveAsContact(card); setOpenMenuId(null); }}
+                              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+                            >
+                              <UserPlus size={14} /> 연락처 저장
+                            </button>
                             <button
                               onClick={() => { onEdit(card); setOpenMenuId(null); }}
                               className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
