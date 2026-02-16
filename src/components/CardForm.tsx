@@ -15,6 +15,26 @@ const groupConfig: Record<CardGroup, { color: string; activeColor: string }> = {
   [CardGroup.OTHER]: { color: 'border-slate-200 text-slate-500', activeColor: 'bg-slate-400 text-white border-slate-400' },
 };
 
+const InputField: React.FC<{
+  label: string; name: string; type?: string; placeholder: string; required?: boolean;
+  value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}> = ({ label, name, type = 'text', placeholder, required = false, value, onChange }) => (
+  <div>
+    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+      {label} {required && <span className="text-red-400">*</span>}
+    </label>
+    <input
+      type={type}
+      name={name}
+      required={required}
+      value={value}
+      onChange={onChange}
+      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-900 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300 focus:bg-white transition-all text-sm"
+      placeholder={placeholder}
+    />
+  </div>
+);
+
 export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -37,25 +57,6 @@ export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCance
     e.preventDefault();
     onSave(formData);
   };
-
-  const InputField = ({ label, name, type = 'text', placeholder, required = false }: {
-    label: string; name: string; type?: string; placeholder: string; required?: boolean;
-  }) => (
-    <div>
-      <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-        {label} {required && <span className="text-red-400">*</span>}
-      </label>
-      <input
-        type={type}
-        name={name}
-        required={required}
-        value={(formData as any)[name]}
-        onChange={handleChange}
-        className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-900 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300 focus:bg-white transition-all text-sm"
-        placeholder={placeholder}
-      />
-    </div>
-  );
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
@@ -81,19 +82,19 @@ export const CardForm: React.FC<CardFormProps> = ({ initialData, onSave, onCance
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <InputField label="이름" name="name" placeholder="홍길동" required />
+          <InputField label="이름" name="name" placeholder="홍길동" required value={formData.name} onChange={handleChange} />
 
           <div className="grid grid-cols-2 gap-3">
-            <InputField label="회사" name="company" placeholder="회사명" />
-            <InputField label="직함" name="title" placeholder="직책" />
+            <InputField label="회사" name="company" placeholder="회사명" value={formData.company} onChange={handleChange} />
+            <InputField label="직함" name="title" placeholder="직책" value={formData.title} onChange={handleChange} />
           </div>
 
           <div className="h-px bg-slate-100 my-2"></div>
 
-          <InputField label="전화번호" name="phone" type="tel" placeholder="010-0000-0000" />
-          <InputField label="이메일" name="email" type="email" placeholder="example@company.com" />
-          <InputField label="웹사이트" name="website" placeholder="www.company.com" />
-          <InputField label="주소" name="address" placeholder="서울시 ..." />
+          <InputField label="전화번호" name="phone" type="tel" placeholder="010-0000-0000" value={formData.phone} onChange={handleChange} />
+          <InputField label="이메일" name="email" type="email" placeholder="example@company.com" value={formData.email} onChange={handleChange} />
+          <InputField label="웹사이트" name="website" placeholder="www.company.com" value={formData.website} onChange={handleChange} />
+          <InputField label="주소" name="address" placeholder="서울시 ..." value={formData.address} onChange={handleChange} />
 
           <div className="h-px bg-slate-100 my-2"></div>
 
