@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, Image as ImageIcon, Loader2, RefreshCw, X } from 'lucide-react';
+import { Image as ImageIcon, Loader2, RefreshCw, X } from 'lucide-react';
 import { analyzeBusinessCardImage } from '../services/geminiService';
 import { BusinessCardData } from '../types';
 
@@ -111,7 +111,8 @@ export const CardScanner: React.FC<CardScannerProps> = ({ onScanComplete, onCanc
       onScanComplete(extractedData, base64String);
     } catch (err) {
       console.error(err);
-      setError("명함 인식에 실패했습니다. 다시 시도해주세요.");
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(`인식 실패: ${msg}`);
       setIsAnalyzing(false);
     }
   };
