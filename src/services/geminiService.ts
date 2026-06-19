@@ -39,20 +39,23 @@ export const analyzeBusinessCardImage = async (base64Image: string): Promise<Par
     };
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview", 
-      contents: {
-        parts: [
-          {
-            inlineData: {
-              mimeType: "image/jpeg",
-              data: cleanBase64,
+      model: "gemini-2.0-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              inlineData: {
+                mimeType: "image/jpeg",
+                data: cleanBase64,
+              },
             },
-          },
-          {
-            text: "이 명함 이미지에서 연락처 정보를 추출해서 JSON으로 줘. 한국어와 영어를 모두 지원해. 전화번호는 010으로 시작하면 mobile, 지역번호(02, 031 등)로 시작하면 tel로 분류해줘.",
-          },
-        ],
-      },
+            {
+              text: "이 명함 이미지에서 연락처 정보를 추출해서 JSON으로 줘. 한국어와 영어를 모두 지원해. 전화번호는 010으로 시작하면 mobile, 지역번호(02, 031 등)로 시작하면 tel로 분류해줘.",
+            },
+          ],
+        },
+      ],
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
