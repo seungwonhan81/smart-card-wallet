@@ -18,7 +18,7 @@ export const analyzeBusinessCardImage = async (base64Image: string): Promise<Par
     throw new Error("API Key가 설정되지 않았습니다. Vercel 환경 변수나 .env 파일을 확인해주세요.");
   }
 
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({ apiKey, httpOptions: { apiVersion: 'v1' } });
   
   try {
     const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
