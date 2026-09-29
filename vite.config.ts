@@ -7,8 +7,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), basicSsl()],
     define: {
-      // Direct replacement of process.env.API_KEY to avoid ReferenceError
-      'process.env.API_KEY': JSON.stringify(env.API_KEY || '')
+      // env.API_KEY: from .env.local (local dev)
+      // process.env.API_KEY: from Vercel dashboard (production build)
+      'process.env.API_KEY': JSON.stringify(process.env.API_KEY || env.API_KEY || '')
     },
     server: {
       port: 3000,
