@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { BusinessCardData, CardGroup } from '../types';
-import { Search, Phone, Mail, Globe, MapPin, MoreVertical, Pencil, Trash2, UserPlus } from 'lucide-react';
-import { GROUP_COLORS } from '../constants';
+import { Search, Phone, Mail, Globe, MapPin, MoreVertical, Pencil, Trash2, UserPlus, Download, Upload, ImageDown } from 'lucide-react';
 
 const saveAsContact = (card: BusinessCardData) => {
   const lines = [
@@ -32,9 +31,13 @@ interface CardListProps {
   cards: BusinessCardData[];
   onEdit: (card: BusinessCardData) => void;
   onDelete: (id: string) => void;
+  onExport: () => void;
+  onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSaveImage: (card: BusinessCardData) => void;
 }
 
-export const CardList: React.FC<CardListProps> = ({ cards, onEdit, onDelete }) => {
+export const CardList: React.FC<CardListProps> = ({ cards, onEdit, onDelete, onExport, onImport, onSaveImage }) => {
+  const importInputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<CardGroup | 'ALL'>('ALL');
   const [sortOption, setSortOption] = useState<'name' | 'date'>('date');
@@ -73,10 +76,29 @@ export const CardList: React.FC<CardListProps> = ({ cards, onEdit, onDelete }) =
       {/* Header */}
       <div className="mb-8">
         <p className="text-sm text-slate-400 font-medium mb-1">Smart Card Wallet</p>
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-          내 명함
-          <span className="text-slate-300 font-normal ml-2 text-2xl">{cards.length}</span>
-        </h1>
+        <div className="flex items-end justify-between">
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+            내 명함
+            <span className="text-slate-300 font-normal ml-2 text-2xl">{cards.length}</span>
+          </h1>
+          <div className="flex gap-3 pb-1">
+            <button
+              onClick={onExport}
+              className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 transition-colors"
+              title="백업"
+            >
+              <Download size={13} /> 백업
+            </button>
+            <button
+              onClick={() => importInputRef.current?.click()}
+              className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 transition-colors"
+              title="복원"
+            >
+              <Upload size={13} /> 복원
+            </button>
+            <input type="file" accept=".json" className="hidden" ref={importInputRef} onChange={onImport} />
+          </div>
+        </div>
       </div>
 
       {/* Search */}
@@ -180,13 +202,21 @@ export const CardList: React.FC<CardListProps> = ({ cards, onEdit, onDelete }) =
                       {openMenuId === card.id && (
                         <>
                           <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
-                          <div className="absolute right-0 top-8 z-20 bg-white rounded-xl shadow-lg border border-slate-100 py-1 min-w-[100px]">
+                          <div className="absolute right-0 top-8 z-20 bg-white rounded-xl shadow-lg border border-slate-100 py-1 min-w-[110px]">
                             <button
                               onClick={() => { saveAsContact(card); setOpenMenuId(null); }}
                               className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
                             >
                               <UserPlus size={14} /> 연락처 저장
                             </button>
+                            {card.imageUrl && (
+                              <button
+                                onClick={() => { onSaveImage(card); setOpenMenuId(null); }}
+                                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+                              >
+                                <ImageDown size={14} /> 사진 저장
+                              </button>
+                            )}
                             <button
                               onClick={() => { onEdit(card); setOpenMenuId(null); }}
                               className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"

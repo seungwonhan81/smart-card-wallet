@@ -1,0 +1,53 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-06-19T04:20:58.489Z",
+  "activeFeatures": [
+    "smart-card"
+  ],
+  "primaryFeature": "smart-card",
+  "features": {
+    "smart-card": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-06-19T04:13:08.164Z",
+        "lastUpdated": "2026-06-19T04:20:58.489Z"
+      },
+      "lastFile": "c:\\Users\\Hanpos\\Desktop\\Project\\AI CODING\\smart-card\\src\\components\\CardScanner.tsx"
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-06-19T04:08:17.963Z",
+    "onboardingCompleted": false,
+    "lastActivity": "2026-06-19T04:20:58.489Z"
+  },
+  "history": [
+    {
+      "timestamp": "2026-06-19T04:13:08.164Z",
+      "feature": "smart-card",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-06-19T04:20:48.156Z",
+      "feature": "smart-card",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-06-19T04:20:58.489Z",
+      "feature": "smart-card",
+      "phase": "do",
+      "action": "updated"
+    }
+  ]
+}

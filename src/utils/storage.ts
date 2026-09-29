@@ -70,3 +70,44 @@ export const dbDeleteCard = async (id: string): Promise<void> => {
     request.onerror = () => reject(request.error);
   });
 };
+
+export const requestPersistentStorage = async (): Promise<boolean> => {
+  if ('storage' in navigator && 'persist' in navigator.storage) {
+    const granted = await navigator.storage.persist();
+    return granted;
+  }
+  return false;
+};
+
+export const exportCardsToJSON = async (): Promise<void> => {
+  const cards = await dbGetCards();
+  const blob = new Blob([JSON.stringify(cards, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `smart-card-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+export const importCardsFromJSON = async (file: File): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const cards: BusinessCardData[] = JSON.parse(e.target?.result as string);
+        if (!Array.isArray(cards)) throw new Error('올바르지 않은 파일 형식');
+        for (const card of cards) {
+          await dbSaveCard(card);
+        }
+        resolve(cards.length);
+      } catch {
+        reject(new Error('백업 파일 형식이 올바르지 않습니다.'));
+      }
+    };
+    reader.onerror = () => reject(new Error('파일을 읽을 수 없습니다.'));
+    reader.readAsText(file);
+  });
+};

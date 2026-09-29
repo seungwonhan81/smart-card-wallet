@@ -7,7 +7,8 @@ import { CardScanner } from './components/CardScanner';
 import { CardForm } from './components/CardForm';
 import { StatsChart } from './components/StatsChart';
 import { InstallPwa } from './components/InstallPwa';
-import { dbGetCards, dbSaveCard, dbDeleteCard } from './utils/storage';
+import { dbGetCards, dbSaveCard, dbDeleteCard, requestPersistentStorage, exportCardsToJSON, importCardsFromJSON } from './utils/storage';
+import { saveImageToDevice } from './utils/imageStorage';
 
 const SEED_KEY = 'smart_card_wallet_seeded_v1';
 
@@ -16,10 +17,17 @@ const App: React.FC = () => {
   const [cards, setCards] = useState<BusinessCardData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingCard, setEditingCard] = useState<Partial<BusinessCardData> | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2500);
+  };
 
   // Load cards from DB on mount
   useEffect(() => {
     const loadData = async () => {
+      await requestPersistentStorage();
       try {
         const dbCards = await dbGetCards();
         
@@ -88,11 +96,40 @@ const App: React.FC = () => {
   };
 
   const handleDeleteRequest = async (id: string) => {
-    // Optimistic UI update
     setCards(prev => prev.filter(c => c.id !== id));
-    
-    // Delete from DB
     await dbDeleteCard(id);
+  };
+
+  const handleExport = async () => {
+    try {
+      await exportCardsToJSON();
+      showToast('백업 파일이 저장되었습니다.');
+    } catch {
+      showToast('백업에 실패했습니다.');
+    }
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const count = await importCardsFromJSON(file);
+      const refreshed = await dbGetCards();
+      setCards(refreshed);
+      showToast(`${count}개의 명함을 복원했습니다.`);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : '복원에 실패했습니다.');
+    }
+    e.target.value = '';
+  };
+
+  const handleSaveImage = (card: BusinessCardData) => {
+    if (!card.imageUrl) {
+      showToast('저장된 사진이 없습니다.');
+      return;
+    }
+    saveImageToDevice(card.imageUrl, card.name);
+    showToast('사진을 다운로드합니다.');
   };
 
   const renderContent = () => {
@@ -106,7 +143,7 @@ const App: React.FC = () => {
 
     switch (currentView) {
       case 'HOME':
-        return <CardList cards={cards} onEdit={handleEditRequest} onDelete={handleDeleteRequest} />;
+        return <CardList cards={cards} onEdit={handleEditRequest} onDelete={handleDeleteRequest} onExport={handleExport} onImport={handleImport} onSaveImage={handleSaveImage} />;
       case 'SCAN':
         return <CardScanner onScanComplete={handleScanComplete} onCancel={() => setCurrentView('HOME')} />;
       case 'EDIT':
@@ -123,7 +160,7 @@ const App: React.FC = () => {
       case 'STATS':
         return <StatsChart cards={cards} />;
       default:
-        return <CardList cards={cards} onEdit={handleEditRequest} onDelete={handleDeleteRequest} />;
+        return <CardList cards={cards} onEdit={handleEditRequest} onDelete={handleDeleteRequest} onExport={handleExport} onImport={handleImport} onSaveImage={handleSaveImage} />;
     }
   };
 
@@ -133,6 +170,12 @@ const App: React.FC = () => {
       <main className="min-h-screen">
         {renderContent()}
       </main>
+
+      {toast && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-sm px-5 py-3 rounded-2xl shadow-lg">
+          {toast}
+        </div>
+      )}
 
       {/* Show Bottom Nav only on main views */}
       {currentView !== 'SCAN' && currentView !== 'EDIT' && (

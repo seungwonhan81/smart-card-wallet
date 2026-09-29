@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix: InputField을 컴포넌트 외부로 분리하여 한글 입력 버그 수정\n\nInputField이 CardForm 내부에 정의되어 매 렌더링마다 새 컴포넌트로 인식,\ninput이 언마운트/리마운트되며 포커스와 한글 IME 조합이 중단되던 문제 해결\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(npx vite build)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: 명함에서 휴대폰 연락처로 저장하는 기능 추가 \\(vCard\\)\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
