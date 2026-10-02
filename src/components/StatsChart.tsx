@@ -7,9 +7,11 @@ interface StatsChartProps {
 }
 
 const COLOR_MAP: Record<CardGroup, string> = {
-  [CardGroup.WORK]: '#3b82f6',
-  [CardGroup.FRIEND]: '#10b981',
-  [CardGroup.FAMILY]: '#fb7185',
+  [CardGroup.CUSTOMER]: '#3b82f6',
+  [CardGroup.PARTNER]: '#6366f1',
+  [CardGroup.CHURCH]: '#f59e0b',
+  [CardGroup.PLACE]: '#14b8a6',
+  [CardGroup.ACQUAINTANCE]: '#fb923c',
   [CardGroup.OTHER]: '#94a3b8',
 };
 

@@ -11,7 +11,7 @@ export const INITIAL_CARDS: BusinessCardData[] = [
     email: 'chulsoo@techsol.com',
     website: 'www.techsol.com',
     address: '서울시 강남구 테헤란로 123',
-    group: CardGroup.WORK,
+    group: CardGroup.CUSTOMER,
     createdAt: Date.now() - 10000000,
   },
   {
@@ -37,14 +37,16 @@ export const INITIAL_CARDS: BusinessCardData[] = [
     email: 'jpark@futurefin.com',
     website: 'www.futurefin.com',
     address: '서울시 여의도 금융로 789',
-    group: CardGroup.FRIEND,
+    group: CardGroup.ACQUAINTANCE,
     createdAt: Date.now() - 2000000,
   }
 ];
 
 export const GROUP_COLORS: Record<CardGroup, string> = {
-  [CardGroup.WORK]: 'bg-blue-100 text-blue-800',
-  [CardGroup.FRIEND]: 'bg-green-100 text-green-800',
-  [CardGroup.FAMILY]: 'bg-pink-100 text-pink-800',
+  [CardGroup.CUSTOMER]: 'bg-blue-100 text-blue-800',
+  [CardGroup.PARTNER]: 'bg-indigo-100 text-indigo-800',
+  [CardGroup.CHURCH]: 'bg-amber-100 text-amber-800',
+  [CardGroup.PLACE]: 'bg-teal-100 text-teal-800',
+  [CardGroup.ACQUAINTANCE]: 'bg-orange-100 text-orange-800',
   [CardGroup.OTHER]: 'bg-gray-100 text-gray-800',
 };

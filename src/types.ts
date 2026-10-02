@@ -1,8 +1,10 @@
 export enum CardGroup {
-  WORK = '직장',
-  FRIEND = '친구',
-  FAMILY = '가족',
-  OTHER = '기타'
+  CUSTOMER = '고객',
+  PARTNER = '거래처',
+  CHURCH = '교회',
+  PLACE = '장소',
+  ACQUAINTANCE = '지인',
+  OTHER = '기타',
 }
 
 export interface BusinessCardData {

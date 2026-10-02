@@ -9,10 +9,12 @@ interface CardFormProps {
 }
 
 const groupConfig: Record<CardGroup, { color: string; activeColor: string }> = {
-  [CardGroup.WORK]: { color: 'border-blue-200 text-blue-600', activeColor: 'bg-blue-500 text-white border-blue-500' },
-  [CardGroup.FRIEND]: { color: 'border-emerald-200 text-emerald-600', activeColor: 'bg-emerald-500 text-white border-emerald-500' },
-  [CardGroup.FAMILY]: { color: 'border-rose-200 text-rose-500', activeColor: 'bg-rose-400 text-white border-rose-400' },
-  [CardGroup.OTHER]: { color: 'border-slate-200 text-slate-500', activeColor: 'bg-slate-400 text-white border-slate-400' },
+  [CardGroup.CUSTOMER]:     { color: 'border-blue-200 text-blue-600',   activeColor: 'bg-blue-500 text-white border-blue-500' },
+  [CardGroup.PARTNER]:      { color: 'border-indigo-200 text-indigo-600', activeColor: 'bg-indigo-500 text-white border-indigo-500' },
+  [CardGroup.CHURCH]:       { color: 'border-amber-200 text-amber-600', activeColor: 'bg-amber-500 text-white border-amber-500' },
+  [CardGroup.PLACE]:        { color: 'border-teal-200 text-teal-600',   activeColor: 'bg-teal-500 text-white border-teal-500' },
+  [CardGroup.ACQUAINTANCE]: { color: 'border-orange-200 text-orange-500', activeColor: 'bg-orange-400 text-white border-orange-400' },
+  [CardGroup.OTHER]:        { color: 'border-slate-200 text-slate-500', activeColor: 'bg-slate-400 text-white border-slate-400' },
 };
 
 const InputField: React.FC<{

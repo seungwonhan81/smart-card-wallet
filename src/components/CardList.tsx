@@ -65,9 +65,11 @@ export const CardList: React.FC<CardListProps> = ({ cards, onEdit, onDelete, onE
   }, [cards, searchTerm, selectedGroup, sortOption]);
 
   const groupColors: Record<string, string> = {
-    [CardGroup.WORK]: 'bg-blue-500',
-    [CardGroup.FRIEND]: 'bg-emerald-500',
-    [CardGroup.FAMILY]: 'bg-rose-400',
+    [CardGroup.CUSTOMER]: 'bg-blue-500',
+    [CardGroup.PARTNER]: 'bg-indigo-500',
+    [CardGroup.CHURCH]: 'bg-amber-500',
+    [CardGroup.PLACE]: 'bg-teal-500',
+    [CardGroup.ACQUAINTANCE]: 'bg-orange-400',
     [CardGroup.OTHER]: 'bg-slate-400',
   };
 
