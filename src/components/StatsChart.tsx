@@ -10,6 +10,7 @@ const COLOR_MAP: Record<CardGroup, string> = {
   [CardGroup.CUSTOMER]: '#3b82f6',
   [CardGroup.PARTNER]: '#6366f1',
   [CardGroup.CHURCH]: '#f59e0b',
+  [CardGroup.GATHERING]: '#a855f7',
   [CardGroup.PLACE]: '#14b8a6',
   [CardGroup.ACQUAINTANCE]: '#fb923c',
   [CardGroup.OTHER]: '#94a3b8',

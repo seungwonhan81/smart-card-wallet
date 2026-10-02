@@ -2,6 +2,7 @@ export enum CardGroup {
   CUSTOMER = '고객',
   PARTNER = '거래처',
   CHURCH = '교회',
+  GATHERING = '모임',
   PLACE = '장소',
   ACQUAINTANCE = '지인',
   OTHER = '기타',
