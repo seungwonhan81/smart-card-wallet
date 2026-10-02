@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/gemini.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

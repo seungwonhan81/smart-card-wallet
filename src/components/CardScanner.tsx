@@ -113,6 +113,7 @@ export const CardScanner: React.FC<CardScannerProps> = ({ onScanComplete, onCanc
       console.error(err);
       const msg = err instanceof Error ? err.message : String(err);
       setError(`인식 실패: ${msg}`);
+    } finally {
       setIsAnalyzing(false);
     }
   };
@@ -122,12 +123,16 @@ export const CardScanner: React.FC<CardScannerProps> = ({ onScanComplete, onCanc
     if (!file) return;
     stopCamera();
     const reader = new FileReader();
-    reader.onloadend = () => {
+    reader.onerror = () => {
+      setError('사진 파일을 읽지 못했습니다. 다른 사진을 선택해주세요.');
+    };
+    reader.onload = () => {
       const base64String = reader.result as string;
       setPreviewUrl(base64String);
       processImage(base64String);
     };
     reader.readAsDataURL(file);
+    event.target.value = '';
   };
 
   const triggerGallery = () => {

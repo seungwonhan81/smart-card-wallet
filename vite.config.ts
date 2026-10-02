@@ -1,15 +1,16 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import basicSsl from '@vitejs/plugin-basic-ssl'
+import { resolveGeminiConfig } from './src/services/geminiConfig'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const gemini = resolveGeminiConfig(env, process.env);
   return {
     plugins: [react(), basicSsl()],
     define: {
-      // env.API_KEY: from .env.local (local dev)
-      // process.env.API_KEY: from Vercel dashboard (production build)
-      'process.env.API_KEY': JSON.stringify(process.env.API_KEY || env.API_KEY || '')
+      'process.env.GEMINI_API_KEY': JSON.stringify(gemini.apiKey),
+      'process.env.GEMINI_MODEL': JSON.stringify(gemini.model)
     },
     server: {
       port: 3000,
